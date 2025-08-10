@@ -1,7 +1,8 @@
 // Backend API configuration
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://your-backend-url.com' // Replace with your deployed backend URL
-  : 'http://localhost:3001';
+const API_BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "ad-lp.railway.internal" // Replace with your deployed backend URL
+    : "http://localhost:3001";
 
 export interface BackendAnalysisResponse {
   adContent: any;
@@ -9,16 +10,19 @@ export interface BackendAnalysisResponse {
   analysis: any;
 }
 
-export async function analyzeWithBackend(adUrl: string, landingPageUrl: string): Promise<BackendAnalysisResponse> {
+export async function analyzeWithBackend(
+  adUrl: string,
+  landingPageUrl: string
+): Promise<BackendAnalysisResponse> {
   try {
     const response = await fetch(`${API_BASE_URL}/api/analyze`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         adUrl,
-        landingPageUrl
+        landingPageUrl,
       }),
     });
 
@@ -29,8 +33,12 @@ export async function analyzeWithBackend(adUrl: string, landingPageUrl: string):
 
     return await response.json();
   } catch (error) {
-    console.error('Backend API error:', error);
-    throw new Error(`Failed to analyze pages: ${error.message}`);
+    console.error("Backend API error:", error);
+    if (error instanceof Error) {
+      throw new Error(`Failed to analyze pages: ${error.message}`);
+    } else {
+      throw new Error("Failed to analyze pages: Unknown error occurred");
+    }
   }
 }
 
